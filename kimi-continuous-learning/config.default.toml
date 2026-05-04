@@ -1,0 +1,25 @@
+[learning]
+version = "2.0"
+
+[learning.observer]
+enabled = false
+run_interval_minutes = 5
+min_observations_to_analyze = 20
+model = "kimi-mini"
+
+[learning.observation]
+max_file_size_mb = 10
+archive_after_days = 30
+secret_scrubbing = true
+signal_every_n = 20
+
+[learning.instinct]
+default_confidence = 0.5
+confidence_decay_days = 30
+auto_promote_threshold = 0.8
+auto_promote_min_projects = 2
+
+[learning.evolution]
+min_confidence_for_skill = 0.7
+output_dir = "~/.kimi/skills/learned"
+sync_to_learned = true
