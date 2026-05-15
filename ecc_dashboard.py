@@ -8,10 +8,14 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import os
 import json
-import subprocess
+from pathlib import Path
 from typing import Dict, List, Optional
+import logging
+import webbrowser
 
-from scripts.lib.ecc_dashboard_runtime import build_terminal_launch, maximize_window
+from scripts.lib.ecc_dashboard_runtime import launch_terminal, maximize_window
+
+logger = logging.getLogger(__name__)
 
 # ============================================================================
 # DATA LOADERS - Load ECC data from the project
@@ -23,31 +27,44 @@ def get_project_path() -> str:
 
 
 def load_agents(project_path: str) -> List[Dict]:
-    """Load agents from AGENTS.md"""
-    agents_file = os.path.join(project_path, "AGENTS.md")
-    agents = []
-    
-    if os.path.exists(agents_file):
-        with open(agents_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-            
-        # Parse agent table from AGENTS.md
-        lines = content.split('\n')
-        in_table = False
-        for line in lines:
-            if '| Agent | Purpose | When to Use |' in line:
-                in_table = True
+    """Load agents by scanning the agents/ directory.
+
+    Parses YAML frontmatter (name, description) from each agent file.
+    The directory is the source of truth; AGENTS.md is hand-maintained
+    and drifts out of sync.
+    """
+    agents_dir = os.path.join(project_path, "agents")
+    agents: List[Dict] = []
+
+    if os.path.isdir(agents_dir):
+        for item in sorted(os.listdir(agents_dir)):
+            if not item.endswith('.md'):
                 continue
-            if in_table and line.startswith('|'):
-                parts = [p.strip() for p in line.split('|')]
-                if len(parts) >= 4 and parts[1] and parts[1] != 'Agent':
-                    agents.append({
-                        'name': parts[1],
-                        'purpose': parts[2],
-                        'when_to_use': parts[3]
-                    })
-    
-    # Fallback default agents if file not found
+            agent_path = os.path.join(agents_dir, item)
+            name = os.path.splitext(item)[0]
+            description = ''
+            try:
+                with open(agent_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except OSError:
+                content = ''
+            if content.startswith('---'):
+                end = content.find('\n---', 3)
+                if end != -1:
+                    for fm_line in content[3:end].splitlines():
+                        stripped = fm_line.strip()
+                        if stripped.startswith('name:'):
+                            name = stripped.split(':', 1)[1].strip().strip('"\'')
+                        elif stripped.startswith('description:'):
+                            description = stripped.split(':', 1)[1].strip().strip('"\'')
+            agents.append({
+                'name': name,
+                'purpose': description,
+                'when_to_use': description,
+                'path': agent_path,
+            })
+
+    # Fallback default agents if directory not found
     if not agents:
         agents = [
             {'name': 'planner', 'purpose': 'Implementation planning', 'when_to_use': 'Complex features, refactoring'},
@@ -98,9 +115,9 @@ def load_skills(project_path: str) -> List[Dict]:
                                 if line.startswith('# '):
                                     description = line[2:].strip()[:100]
                                     break
-                    except:
-                        pass
-                
+                    except Exception:
+                        logger.debug("Failed to parse skill file %s", skill_file, exc_info=True)
+
                 # Determine category
                 category = "General"
                 item_lower = item.lower()
@@ -172,9 +189,9 @@ def load_commands(project_path: str) -> List[Dict]:
                             if line.startswith('# '):
                                 description = line[2:].strip()
                                 break
-                except:
-                    pass
-                
+                except Exception:
+                    logger.debug("Failed to parse command file %s", item, exc_info=True)
+
                 commands.append({
                     'name': cmd_name,
                     'description': description or cmd_name.replace('-', ' ').title()
@@ -266,8 +283,8 @@ class ECCDashboard(tk.Tk):
         try:
             self.icon_image = tk.PhotoImage(file='assets/images/ecc-logo.png')
             self.iconphoto(True, self.icon_image)
-        except:
-            pass
+        except Exception:
+            logger.debug("Failed to load window icon", exc_info=True)
         
         self.minsize(800, 600)
         
@@ -330,8 +347,8 @@ class ECCDashboard(tk.Tk):
             self.logo_image = tk.PhotoImage(file='assets/images/ecc-logo.png')
             self.logo_image = self.logo_image.subsample(2, 2)
             ttk.Label(header_frame, image=self.logo_image).pack(side=tk.LEFT, padx=(0, 10))
-        except:
-            pass
+        except Exception:
+            logger.debug("Failed to load header logo", exc_info=True)
         
         self.title_label = ttk.Label(header_frame, text="ECC Dashboard", font=('Open Sans', 18, 'bold'))
         self.title_label.pack(side=tk.LEFT)
@@ -793,27 +810,31 @@ Project: github.com/affaan-m/everything-claude-code"""
     
     def open_terminal(self):
         """Open terminal at project path"""
-        path = self.path_entry.get()
-        argv, kwargs = build_terminal_launch(path)
-        subprocess.Popen(argv, **kwargs)
-    
+        path = os.path.realpath(self.path_entry.get())
+        try:
+            launch_terminal(path)
+        except Exception as exc:
+            messagebox.showerror("Error", f"Could not open terminal: {exc}")
+
+    def _open_project_doc(self, filename: str) -> None:
+        """Open a project document safely, constrained to the project directory."""
+        base = os.path.realpath(self.path_entry.get())
+        target = os.path.realpath(os.path.join(base, filename))
+        if os.path.commonpath([base, target]) != base:
+            messagebox.showerror("Error", "Access denied: path is outside the project directory")
+            return
+        if os.path.exists(target):
+            webbrowser.open(Path(target).as_uri())
+        else:
+            messagebox.showerror("Error", f"{filename} not found")
+
     def open_readme(self):
         """Open README in default browser/reader"""
-        import subprocess
-        path = os.path.join(self.path_entry.get(), 'README.md')
-        if os.path.exists(path):
-            subprocess.Popen(['xdg-open' if os.name != 'nt' else 'start', path])
-        else:
-            messagebox.showerror("Error", "README.md not found")
+        self._open_project_doc('README.md')
     
     def open_agents(self):
         """Open AGENTS.md"""
-        import subprocess
-        path = os.path.join(self.path_entry.get(), 'AGENTS.md')
-        if os.path.exists(path):
-            subprocess.Popen(['xdg-open' if os.name != 'nt' else 'start', path])
-        else:
-            messagebox.showerror("Error", "AGENTS.md not found")
+        self._open_project_doc('AGENTS.md')
     
     def refresh_data(self):
         """Refresh all data"""
@@ -879,22 +900,20 @@ Project: github.com/affaan-m/everything-claude-code"""
         def update_widget_colors(widget):
             try:
                 widget.configure(background=bg_color)
-            except:
-                pass
-            for child in widget.winfo_children():
-                try:
-                    child.configure(background=bg_color)
-                except:
-                    pass
+            except Exception:
+                logger.debug("Cannot set background on %s", widget.__class__.__name__, exc_info=True)
+            try:
+                children = widget.winfo_children()
+            except Exception:
+                logger.debug("Cannot list child widgets on %s", widget.__class__.__name__, exc_info=True)
+                return
+            for child in children:
                 try:
                     update_widget_colors(child)
-                except:
-                    pass
-        
-        try:
-            update_widget_colors(self)
-        except:
-            pass
+                except Exception:
+                    logger.debug("Cannot update child widget colors on %s", child.__class__.__name__, exc_info=True)
+
+        update_widget_colors(self)
         
         self.update()
 
