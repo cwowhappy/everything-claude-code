@@ -10,11 +10,13 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [],
       "defaultInstall": true,
@@ -32,12 +34,14 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [],
       "defaultInstall": true,
@@ -53,12 +57,14 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [],
       "defaultInstall": true,
@@ -76,6 +82,7 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "opencode",
         "codebuddy"
@@ -96,12 +103,14 @@
         ".gemini",
         ".opencode",
         ".qwen",
+        ".zed",
         "mcp-configs",
         "scripts/auto-update.js",
         "scripts/setup-package-manager.js"
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
@@ -109,7 +118,8 @@
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [],
       "defaultInstall": true,
@@ -163,6 +173,9 @@
         "skills/quarkus-patterns",
         "skills/quarkus-tdd",
         "skills/quarkus-verification",
+        "skills/react-patterns",
+        "skills/react-performance",
+        "skills/react-testing",
         "skills/rust-patterns",
         "skills/rust-testing",
         "skills/springboot-patterns",
@@ -172,13 +185,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "rules-core",
@@ -204,13 +219,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -248,13 +265,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -262,6 +281,37 @@
       "defaultInstall": true,
       "cost": "medium",
       "stability": "stable"
+    },
+    {
+      "id": "optimization-workflows",
+      "kind": "skills",
+      "description": "Parallel execution, benchmarking, data-throughput, latency, and recursive decision-ledger skills for faster evidence-backed work.",
+      "paths": [
+        "skills/benchmark-optimization-loop",
+        "skills/data-throughput-accelerator",
+        "skills/latency-critical-systems",
+        "skills/parallel-execution-optimizer",
+        "skills/recursive-decision-ledger"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "codex",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed"
+      ],
+      "dependencies": [
+        "workflow-quality",
+        "operator-workflows"
+      ],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "beta"
     },
     {
       "id": "security",
@@ -286,13 +336,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "workflow-quality"
@@ -317,13 +369,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -350,13 +404,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -391,16 +447,51 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
+      ],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "beta"
+    },
+    {
+      "id": "prediction-market-skills",
+      "kind": "skills",
+      "description": "Public, non-advisory prediction-market and Itô basket research workflows with gated Itô API access.",
+      "paths": [
+        "skills/ito-basket-compare",
+        "skills/ito-data-atlas-agent",
+        "skills/ito-market-intelligence",
+        "skills/ito-trade-planner",
+        "skills/prediction-market-oracle-research",
+        "skills/prediction-market-risk-review"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "codex",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed"
+      ],
+      "dependencies": [
+        "research-apis",
+        "business-content",
+        "security"
       ],
       "defaultInstall": false,
       "cost": "medium",
@@ -416,13 +507,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "business-content"
@@ -436,6 +529,7 @@
       "kind": "skills",
       "description": "Media generation, technical explainers, and AI-assisted editing skills.",
       "paths": [
+        "skills/blender-motion-state-inspection",
         "skills/fal-ai-media",
         "skills/manim-video",
         "skills/remotion-video-creation",
@@ -445,12 +539,14 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -475,6 +571,7 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "codex",
         "opencode"
       ],
@@ -500,13 +597,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -543,13 +642,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -575,13 +676,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -599,13 +702,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "framework-language",
@@ -634,13 +739,15 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
@@ -659,19 +766,165 @@
       ],
       "targets": [
         "claude",
+        "claude-project",
         "cursor",
         "antigravity",
         "codex",
         "opencode",
         "codebuddy",
         "joycode",
-        "qwen"
+        "qwen",
+        "zed"
       ],
       "dependencies": [
         "platform-configs"
       ],
       "defaultInstall": false,
       "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-ja-jp",
+      "kind": "docs",
+      "description": "Japanese (ja-JP) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/ja-JP"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-zh-cn",
+      "kind": "docs",
+      "description": "Simplified Chinese (zh-CN) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/zh-CN"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-ko-kr",
+      "kind": "docs",
+      "description": "Korean (ko-KR) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/ko-KR"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-pt-br",
+      "kind": "docs",
+      "description": "Brazilian Portuguese (pt-BR) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/pt-BR"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-ru",
+      "kind": "docs",
+      "description": "Russian (ru) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/ru"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-tr",
+      "kind": "docs",
+      "description": "Turkish (tr) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/tr"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-vi-vn",
+      "kind": "docs",
+      "description": "Vietnamese (vi-VN) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/vi-VN"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-zh-tw",
+      "kind": "docs",
+      "description": "Traditional Chinese (zh-TW) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/zh-TW"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-de-de",
+      "kind": "docs",
+      "description": "German (de-DE) translated reference docs for agents, commands, skills, and rules.",
+      "paths": [
+        "docs/de-DE"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
       "stability": "stable"
     }
   ]

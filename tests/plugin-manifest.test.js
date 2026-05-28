@@ -134,6 +134,11 @@ test('agent.yaml version matches package.json', () => {
   assert.strictEqual(match[1], expectedVersion);
 });
 
+test('agent.yaml uses canonical ECC identity', () => {
+  const agentYamlSource = fs.readFileSync(agentYamlPath, 'utf8');
+  assert.ok(/^name:\s*ecc$/m.test(agentYamlSource), 'Expected agent.yaml to use the ecc name');
+});
+
 test('VERSION file matches package.json', () => {
   const versionFile = fs.readFileSync(versionFilePath, 'utf8').trim();
   assert.ok(versionFile, 'Expected VERSION file to be non-empty');
@@ -149,7 +154,7 @@ test('docs/SELECTIVE-INSTALL-ARCHITECTURE.md repoVersion example matches package
 
 test('.opencode/plugins/ecc-hooks.ts active plugin banner matches package.json', () => {
   const source = fs.readFileSync(opencodeHooksPluginPath, 'utf8');
-  const match = source.match(new RegExp(`## Active Plugin: Everything Claude Code v(${semverPattern})`));
+  const match = source.match(new RegExp(`## Active Plugin: ECC v(${semverPattern})`));
   assert.ok(match, 'Expected .opencode/plugins/ecc-hooks.ts to declare an active plugin banner');
   assert.strictEqual(match[1], expectedVersion);
 });
@@ -346,6 +351,11 @@ test('codex plugin.json has interface.displayName', () => {
   );
 });
 
+test('codex plugin.json uses canonical ECC repo and display name', () => {
+  assert.strictEqual(codexPlugin.repository, 'https://github.com/affaan-m/ECC');
+  assert.strictEqual(codexPlugin.interface.displayName, 'ECC');
+});
+
 // ── .mcp.json at plugin root ──────────────────────────────────────────────────
 // Per official docs: keep .mcp.json at plugin root, NOT inside .codex-plugin/
 console.log('\n=== .mcp.json (plugin root) ===\n');
@@ -433,11 +443,15 @@ test('marketplace local plugin path resolves to the repo-root Codex bundle', () 
       continue;
     }
 
-    const resolvedRoot = path.resolve(path.dirname(marketplacePath), plugin.source.path);
+    assert.ok(
+      plugin.source.path.startsWith('./'),
+      `Codex marketplace source.path must be ./-prefixed: ${plugin.source.path}`,
+    );
+    const resolvedRoot = path.resolve(repoRoot, plugin.source.path);
     assert.strictEqual(
       resolvedRoot,
       repoRoot,
-      `Expected local marketplace path to resolve to repo root, got: ${plugin.source.path}`,
+      `Expected local marketplace path to resolve to repo root from marketplace root, got: ${plugin.source.path}`,
     );
     assert.ok(
       fs.existsSync(path.join(resolvedRoot, '.codex-plugin', 'plugin.json')),
@@ -509,6 +523,26 @@ test('user-facing docs do not use the legacy non-URL marketplace add form', () =
     offenders,
     [],
     `Legacy non-URL marketplace add form must not appear in user-facing docs: ${offenders.join(', ')}`,
+  );
+});
+
+test('.codex-plugin README uses current marketplace add flow', () => {
+  const readme = fs.readFileSync(path.join(repoRoot, '.codex-plugin', 'README.md'), 'utf8');
+  assert.ok(
+    readme.includes('codex plugin marketplace add'),
+    'Expected .codex-plugin README to document codex plugin marketplace add',
+  );
+  assert.ok(
+    readme.includes('codex plugin marketplace add affaan-m/ECC'),
+    'Expected .codex-plugin README to document the canonical ECC repo marketplace source',
+  );
+  assert.ok(
+    readme.includes('Official Plugin Directory publishing is coming soon'),
+    'Expected .codex-plugin README to document current official directory status',
+  );
+  assert.ok(
+    !/\bcodex plugin install\b/.test(readme),
+    'codex plugin install is not a current Codex CLI command',
   );
 });
 
